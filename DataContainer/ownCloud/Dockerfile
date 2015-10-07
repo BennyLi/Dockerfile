@@ -7,11 +7,11 @@ ENV OWNCLOUD_VERSION 8.1.3
 
 RUN apt-get update
 
-RUN apt-get install -y wget
+RUN apt-get install -y wget bzip2
 
 RUN mkdir -p /var/www/ && \
     cd /var/www/ && \
-    wget https://download.owncloud.org/community/owncloud-${OWNCLOUD_VERSION}.tar.bz2 -O - | tar -xj
+    wget -q -O - https://download.owncloud.org/community/owncloud-${OWNCLOUD_VERSION}.tar.bz2 | tar -xj
 
 # Setup config???
 

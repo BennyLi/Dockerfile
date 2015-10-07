@@ -17,4 +17,4 @@ RUN apt-get update && apt-get install -y php5-fpm
 WORKDIR /var/www
 
 EXPOSE 9000
-CMD ["php-fpm"]
+CMD ["/usr/sbin/php5-fpm", "--nodaemonize"]
