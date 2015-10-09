@@ -1,5 +1,5 @@
 # BUILD this with
-#   docker build -t bennyli/rpi-nginx:1.8.0 -t bennyli/rpi-nginx .
+#   docker build --no-cache -t bennyli/php-fpm .
 # and RUN with
 #   docker run -d -p 80:80 -p 443:443 --name my_nginx bennyli/rpi-nginx
 

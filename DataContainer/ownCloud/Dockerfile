@@ -1,4 +1,6 @@
 # Data-only container
+# BUILD this with
+#   docker build --no-cache -t bennyli/owncloud-data:8.1.3 -t bennyli/owncloud-data .
 
 FROM resin/rpi-raspbian
 MAINTAINER Benny Li <benny@benny-li.de>
