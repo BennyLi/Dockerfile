@@ -1,0 +1,14 @@
+location /horde/ {
+	rewrite_log on;
+	rewrite /horde/Microsoft-Server-ActiveSync(.*) /horde/rpc.php$1 last;
+
+	location ~ \.php$ {
+		try_files $uri =404;
+		include sites-available/horde.fcgi-php.conf;
+	}
+
+	location / {
+		try_files $uri $uri/ /rampage.php?$args;
+	}
+
+}
