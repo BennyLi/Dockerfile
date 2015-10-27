@@ -8,7 +8,6 @@ MAINTAINER Benny Li <benny@benny-li.de>
 
 ENV build_deps "build-essential"
 
-RUN apt-get update && apt-get upgrade -y
 RUN apt-get update && \
     apt-get upgrade -y && \
     apt-get install -y wget python ${build_deps}
