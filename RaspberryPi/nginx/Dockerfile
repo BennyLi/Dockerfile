@@ -16,7 +16,7 @@ ENV pcre_version 8.32
 ENV zlib_version 1.2.7
 ENV build_deps "build-essential libssl-dev"
 
-RUN apt-get update
+RUN apt-get update && apt-get upgrade -y
 
 # Install custom nginx version
 RUN apt-get install -y wget git

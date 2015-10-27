@@ -9,10 +9,13 @@
 # source: https://github.com/docker-library/php/blob/766e3c00431dfb9c4043b8a1c50c2c9195c94b24/5.4/fpm/Dockerfile
 FROM resin/rpi-raspbian
 MAINTAINER Benny Li <benny@benny-li.de>
-# persistent / runtime deps
-RUN apt-get update && apt-get install -y ca-certificates curl libpcre3 librecode0 libsqlite3-0 libxml2 --no-install-recommends && rm -r /var/lib/apt/lists/*
 
-RUN apt-get update && apt-get install -y php5-fpm
+RUN apt-get update && apt-get upgrade -y
+
+# persistent / runtime deps
+RUN apt-get install -y ca-certificates curl libpcre3 librecode0 libsqlite3-0 libxml2 --no-install-recommends && rm -r /var/lib/apt/lists/*
+
+RUN apt-get install -y php5-fpm php5-mysql
 
 WORKDIR /var/www
 
