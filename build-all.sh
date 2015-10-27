@@ -3,6 +3,10 @@
 docker build --no-cache -t bennyli/owncloud-data:8.1.3 -t bennyli/owncloud-data ./DataContainer/ownCloud
 docker build --no-cache -t bennyli/nginx-conf ./DataContainer/nginx
 
+docker build --no-cache -t bennyli/rpi-monitor ./RaspberryPi/RPi-Monitor
+
+docker build --no-cache -t bennyli/nginx ./RaspberryPi/nginx
+docker build --no-cache -t bennyli/mysql ./RaspberryPi/MySQL
 docker build --no-cache -t bennyli/php-fpm ./RaspberryPi/php
 
 # Gateone special
