@@ -10,7 +10,8 @@ ENV build_deps "build-essential"
 
 RUN apt-get update && \
     apt-get upgrade -y && \
-    apt-get install -y wget python ${build_deps}
+    apt-get install -y wget python && \
+    apt-get install -y ${build_deps}
 
 RUN mkdir /usr/local/src/nodejs && \
     cd /usr/local/src/nodejs && \
@@ -21,7 +22,8 @@ RUN mkdir /usr/local/src/nodejs && \
     make && \
     make install && \
     make clean && \
-    echo "Installed node.js version $(node -v)"
+    echo "Installed node.js version $(node -v)" && \
+    echo "Installed npm version $(npm -v)"
 
 RUN apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false -o APT::AutoRemove::SuggestsImportant=false ${build_deps}
 RUN rm -rf /usr/local/src/*
