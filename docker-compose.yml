@@ -1,0 +1,16 @@
+nginx_conf:
+  build: ./DataContainer/nginx-conf/
+
+nginx:
+  build: ./RaspberryPi/nginx/
+  ports:
+    - "80:80"
+    - "443:443"
+  volume_from:
+    - nginx_conf:ro
+  links:
+    - ghost
+
+ghost:
+  build: ./RaspberryPi/Ghost/
+  
