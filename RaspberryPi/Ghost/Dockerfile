@@ -11,12 +11,14 @@ ENV required_npm_version  2.5.0
 
 RUN apt-get update && \
     apt-get upgrade -y && \
-    apt-get install -y curl unzip
+    apt-get install -y curl unzip build-essential python-software-properties python g++ make && \
+    npm install -g node-gyp
 
-RUN npm cache clean -f && \
-    npm install -g n && \
-    [[ "$(npm -v)" == *"${required_npm_version}"* ]] || npm install npm@${required_npm_version} -g && \
-    [[ "$(node -v)" == *"${required_node_version}"* ]] || n ${required_node_version}
+RUN npm install -g n && \
+    current_npm_version=$(npm -v) && \
+    [ "${current_npm_version#*$required_npm_version}" != "$current_npm_version" ] || npm install npm@${required_npm_version} -g && \
+    current_node_version=$(node -v) && \
+    [ "${current_node_version#*$required_node_version}" != "$current_node_version" ] || n ${required_node_version}
 
 RUN curl -L https://ghost.org/zip/ghost-latest.zip -o ghost.zip && \
     mkdir -p /var/www/ghost && \
@@ -24,10 +26,11 @@ RUN curl -L https://ghost.org/zip/ghost-latest.zip -o ghost.zip && \
     cd /var/www/ghost && \
     npm install --production
 
-COPY "config.js" "/var/www/ghost/config.js"
+COPY config.js /var/www/ghost/
 
 RUN rm /ghost.zip
 
 VOLUME ["/var/www/ghost"]
 EXPOSE 2368
+WORKDIR /var/www/ghost
 CMD ["npm", "start", "--production"]
