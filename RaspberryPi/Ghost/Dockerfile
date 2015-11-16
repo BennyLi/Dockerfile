@@ -15,8 +15,10 @@ RUN apt-get update && \
 
 RUN npm cache clean -f && \
     npm install -g n && \
-    [[ "$(npm -v)" == *"${required_npm_version}"* ]] || npm install npm@${required_npm_version} -g && \
-    [[ "$(node -v)" == *"${required_node_version}"* ]] || n ${required_node_version}
+    current_npm_version=$(npm -v) && \
+    [ "${current_npm_version#*$required_npm_version}" != "$current_npm_version" ] || npm install npm@${required_npm_version} -g && \
+    current_node_version=$(node -v) && \
+    [ "${current_node_version#*$required_node_version}" != "$current_node_version" ] || n ${required_node_version}
 
 RUN curl -L https://ghost.org/zip/ghost-latest.zip -o ghost.zip && \
     mkdir -p /var/www/ghost && \
