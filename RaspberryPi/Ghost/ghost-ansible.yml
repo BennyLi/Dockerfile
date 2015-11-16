@@ -1,0 +1,65 @@
+- name: build and launch the Ghost blog
+  hosts: localhost
+  vars:
+    docker_base_paths:
+      ghost_data_path: "./DataContainer"
+      ghost_path: "./"
+      nginx_data_path: "../nginx/DataContainer"
+      nginx_path: "../nginx"
+
+  tasks:
+    - name: check OS and configure base images for RaspberryPi
+      shell: sed -ni 's/^FROM.*/FROM resin\/rpi-raspbian/g' {{item.value}}/Dockerfile
+      when: ansible_kernel | match(".*rpi.*")
+      with_dict: "{{docker_base_paths}}"
+
+    - name: build base image bennyli/nodejs
+      docker_image:
+        name: bennyli/nodejs
+        path: ../nodejs
+        state: build
+
+    - name: setup the Ghost data container
+      docker_image:
+        name: ghost-data
+        path: ./DataContainer
+        state: present
+
+    - name: build the Ghost application
+      docker_image:
+        name: bennyli/ghost
+        path: .
+        state: build
+
+    - name: setup the nginx data container
+      docker_image:
+        name: nginx-data
+        path: ../nginx/DataContainer
+        state: present
+
+    - name: build nginx web server container
+      docker_image:
+        name: bennyli/nginx
+        path: ../nginx
+        state: build
+
+    - name: start the Ghost application
+      docker:
+        name: ghost-blog
+        image: bennyli/ghost
+        state: started
+        volumes_from:
+          - ghost-data
+
+    - name: start the nginx server
+      docker:
+        name: nginx-server
+        image: bennyli/nginx
+        state: started
+        volumes_from:
+          - nginx-data
+        links:
+          - "ghost-blog"
+        ports:
+          - "80:80"
+          - "443:443"

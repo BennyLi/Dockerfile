@@ -14,7 +14,8 @@ RUN apt-get update && \
     apt-get install -y curl unzip build-essential python-software-properties python g++ make && \
     npm install -g node-gyp
 
-RUN npm install -g n && \
+RUN npm cache clean -f && \
+    npm install -g n && \
     current_npm_version=$(npm -v) && \
     [ "${current_npm_version#*$required_npm_version}" != "$current_npm_version" ] || npm install npm@${required_npm_version} -g && \
     current_node_version=$(node -v) && \
