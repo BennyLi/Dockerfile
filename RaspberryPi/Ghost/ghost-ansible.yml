@@ -9,7 +9,7 @@
 
   tasks:
     - name: check OS and configure base images for RaspberryPi
-      shell: sed -ni 's/^FROM.*/FROM resin\/rpi-raspbian/g' {{item.value}}/Dockerfile
+      replace: dest={{item.value}}/Dockerfile regexp="^FROM.*" replace="FROM resin\/rpi-raspbian"
       when: ansible_kernel | match(".*rpi.*")
       with_dict: "{{docker_base_paths}}"
 

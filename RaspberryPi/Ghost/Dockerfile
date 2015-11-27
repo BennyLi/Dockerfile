@@ -27,8 +27,6 @@ RUN curl -L https://ghost.org/zip/ghost-latest.zip -o ghost.zip && \
     cd /var/www/ghost && \
     npm install --production
 
-COPY config.js /var/www/ghost/
-
 RUN rm /ghost.zip
 
 VOLUME ["/var/www/ghost"]
