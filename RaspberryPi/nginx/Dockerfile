@@ -63,25 +63,27 @@ RUN cd /usr/local/src/nginx-${nginx_version} && \
         --with-pcre=/usr/local/src/pcre-${pcre_version} \
         --with-zlib=/usr/local/src/zlib-${zlib_version} \
         --with-http_dav_module \
-        --with-http_spdy_module
+        --with-http_spdy_module \
+        --with-http_realip_module \
+        --with-http_gzip_static_module
 
 RUN cd /usr/local/src/nginx-${nginx_version} && \
     make && \
     make install && \
     make clean
 
-RUN apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false -o APT::AutoRemove::SuggestsImportant=false ${build_deps}
+#RUN apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false -o APT::AutoRemove::SuggestsImportant=false ${build_deps}
 RUN rm -rf /usr/local/src/*
 
 # forward request and error logs to docker log collector
 RUN ln -sf /dev/stdout /var/log/nginx/access.log
 RUN ln -sf /dev/stderr /var/log/nginx/error.log
 
-VOLUME ["/var/www"]
-VOLUME ["/etc/nginx"]
+#VOLUME ["/var/www"]
+#VOLUME ["/etc/nginx"]
 
 EXPOSE 80 443
 
 COPY "entrypoint.sh" "/entrypoint.sh"
-ENTRYPOINT ["entrypoint.sh"]
-CMD ["nginx", "-g", "daemon off;"]
+ENTRYPOINT ["/entrypoint.sh"]
+CMD ["nginx"]

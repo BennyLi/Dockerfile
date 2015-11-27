@@ -1,0 +1,59 @@
+- name: Fetch SSL certificate files
+  hosts: 192.168.1.66
+  user: root
+  tasks:
+    - name: Fetch the SSL certs
+      fetch: 
+        src=/usr/syno/etc/ssl/{{ item }} 
+        dest=DataContainer/nginx/certs/ 
+        flat=yes
+      with_items:
+        - ssl.key/server.key
+        - ssl.intercrt/server-ca.crt
+        - ssl.crt/ca.crt
+        - ssl.crt/server.crt
+
+- name: build and launch the nginx server
+  hosts: localhost
+  vars:
+    docker_base_paths:
+      nginx_data_path: "../nginx/DataContainer"
+      nginx_path: "../nginx"
+
+  tasks:
+#    - name: check OS and configure base images for RaspberryPi
+#      replace: dest={{item.value}}/Dockerfile regexp="^FROM.*" replace="FROM resin/rpi-raspbian"
+#      when: ansible_kernel | match(".*rpi.*")
+#      with_dict: "{{docker_base_paths}}"
+
+    - name: build nginx web server container
+      docker_image:
+        name: bennyli/nginx
+        path: ../nginx
+        state: build
+
+    - name: setup the nginx data container
+      docker_image:
+        name: nginx-data
+        path: ../nginx/DataContainer
+        state: build
+
+    - name: build dvc container
+      docker:
+        name: nginx-data
+        image: nginx-data
+        volumes:
+          - /etc/nginx
+          - /var/www
+        state: present
+
+    - name: start the nginx server
+      docker:
+        name: nginx-server
+        image: bennyli/nginx
+        state: started
+        volumes_from:
+          - nginx-data
+        ports:
+          - "80:80"
+          - "443:443"
