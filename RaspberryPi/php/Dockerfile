@@ -13,7 +13,8 @@ MAINTAINER Benny Li <benny@benny-li.de>
 RUN apt-get update && apt-get upgrade -y
 
 # persistent / runtime deps
-RUN apt-get install -y ca-certificates curl libpcre3 librecode0 libsqlite3-0 libxml2 --no-install-recommends && rm -r /var/lib/apt/lists/*
+RUN apt-get install -y ca-certificates curl libpcre3 librecode0 libsqlite3-0 libxml2 --no-install-recommends 
+#&& rm -r /var/lib/apt/lists/*
 
 RUN apt-get install -y php5-fpm php5-mysql
 

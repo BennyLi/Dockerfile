@@ -1,0 +1,56 @@
+- name: build Baikal CalDAV / CardDAV server
+  hosts: localhost
+  
+  tasks:
+    - name: build base image bennyli/rpi-php
+      docker_image:
+        name: bennyli/rpi-php
+        path: ../php
+        state: build
+
+    - name: setup the Baikal application container
+      docker_image:
+        name: bennyli/rpi-baikal
+        path: .
+        state: build
+
+    - name: ensure that the Baikal data image is present
+      docker_image:
+        name: baikal-data
+        path: ./DataContainer
+        state: present
+
+    - name: ensure that the nginx data image is present
+      docker_image:
+        name: nginx-data
+        path: ../nginx/DataContainer
+        state: present
+
+    - name: ensure that the nginx web server image is present
+      docker_image:
+        name: bennyli/nginx
+        path: ../nginx
+        state: present
+
+    - name: start the Baikal application
+      docker:
+        name: baikal
+        image: bennyli/rpi-baikal
+        state: started
+        volumes_from:
+          - baikal-data
+
+    - name: start the nginx server
+      docker:
+        name: nginx-server
+        image: bennyli/nginx
+        state: reloaded
+        volumes_from:
+          - nginx-data
+          - baikal
+          - baikal-data
+        links:
+          - "baikal"
+        ports:
+          - "80:80"
+          - "443:443"
